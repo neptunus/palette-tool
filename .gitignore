@@ -1,0 +1,6 @@
+.cache/
+dist/
+node_modules/
+
+output.css
+yarn-error.log
