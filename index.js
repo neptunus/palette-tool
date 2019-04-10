@@ -67,7 +67,7 @@ const ColorList = {
         luminosity: Math.round(baseColor.luminosity - (i/state.steps) * (50*state.luminosityRange)),
       });
     }
-    return m('.mt-10.ml-12.max-w-md.inline-block',
+    return m('.ml-12.max-w-md.inline-block',
       colors.map(color=>m(Color, { color: color }))
     )
   }
@@ -75,7 +75,7 @@ const ColorList = {
 
 const App = {
   view: function({ attrs: { state, actions } }) {
-    return m('.m-3',
+    return m('.m-3.flex.items-start.pt-10',
       m(ColorList, { state: state }),
       m(EmailForm),
       m(Controls, { state: state }),
@@ -87,20 +87,36 @@ const App = {
 const Controls = {
   view: function({ attrs: { state } }) {
     return m('.inline-block.max-w-sm',
-
       m('.bg-white',
-        m('input.mb-4.ml-6.w-40[type=range][max=359]',
+        m('p', 'Steps'),
+        m('input.mb-4.ml-6.w-40[type=range][min=1][max=4]',
           {
+            value: state.steps,
+            oninput: (e)=> actions.modifySteps(Number(e.target.value))
+          }
+        ),
+        m('input.ml-6.w-32.border.px-3[type=number][pattern="[0-9]*"][step=1]', {
+          value: state.steps,
+          oninput: (e) => actions.modifySteps(Number(e.target.value))
+        }),
+      ),
+      m('.bg-white',
+        m('p', 'Hue'),
+        m('input.mb-4.ml-6.w-40[type=range][min=0]',
+          {
+            max: 359,
             value: state.hue % 360,
             oninput: (e)=> actions.modifyHue(Number(e.target.value))
           }
         ),
-        m('input.ml-6.w-32.border.px-3[type=number][pattern="[0-9]*"]', {
+        m('input.ml-6.w-32.border.px-3[type=number][pattern="[0-9]*"]',
+        {
           value: state.hue,
           oninput: (e) => actions.modifyHue(Number(e.target.value))
         }),
       ),
       m('.bg-white',
+        m('p', 'Saturation range'),
         m('input.mb-4.ml-6.w-40[type=range][min=-100][max=100]',
           {
             value: state.saturationRange * 100,
@@ -113,6 +129,7 @@ const Controls = {
         }),
       ),
       m('.bg-white',
+        m('p', 'Luminosity range'),
         m('input.mb-4.ml-6.w-40[type=range][min=0][max=100]',
           {
             value: state.luminosityRange * 100,
@@ -124,25 +141,13 @@ const Controls = {
           oninput: (e) => actions.modifyLuminosity(Number(e.target.value))
         }),
       ),
-      m('.bg-white',
-        m('input.mb-4.ml-6.w-40[type=range][min=0][max=8]',
-          {
-            value: state.steps,
-            oninput: (e)=> actions.modifySteps(Number(e.target.value))
-          }
-        ),
-        m('input.ml-6.w-32.border.px-3[type=number][pattern="[0-9]*"][step=1]', {
-          value: state.steps,
-          oninput: (e) => actions.modifySteps(Number(e.target.value))
-        }),
-      )
     )
   }
 }
 
 const EmailForm = {
   view: function() {
-    return m('.max-w-xs.border.rounded.mx-auto.mt-20.shadow-xl.px-8.inline-block.ml-12',
+    return m('.max-w-xs.border.rounded.shadow-xl.px-8.inline-block.ml-12',
       m('form.my-6', [
         m('.mt-4',
           m('label.block.mt-0.text-gray-700.font-bold.text-sm', {for: 'name'}, 'Your name'),
